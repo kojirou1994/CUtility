@@ -20,4 +20,22 @@ final class CUtilityTests: XCTestCase {
     XCTAssertEqual(String(cStackString: null_terminated_stack_string()), "abc")
     XCTAssertEqual(String(cStackString: nonnull_terminated_stack_string(), isNullTerminated: false), "abcd")
   }
+
+  func testSafeInitialize() {
+    XCTAssertNoThrow(try safeInitialize({ $0 = 1 }))
+    XCTAssertEqual(try! safeInitialize({ $0 = 1 }), 1)
+
+    // built-in error
+    XCTAssertThrowsError(try safeInitialize({ (v: inout Int?) in })) { error in
+      XCTAssertTrue(error is UnexpectedInitializationFailure)
+    }
+
+    struct CustomError: Error {}
+    // user's error
+    XCTAssertThrowsError(try safeInitialize({ (v: inout Int?) in
+      throw CustomError()
+    })) { error in
+      XCTAssertTrue(error is CustomError)
+    }
+  }
 }
