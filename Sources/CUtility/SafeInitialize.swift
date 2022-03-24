@@ -7,7 +7,9 @@ public func safeInitialize<T>(_ body: (inout T?) throws -> Void) throws -> T {
     throw error
   }
   guard let v = temp else {
-    assertionFailure("Initialization successed but the value is still nil, check your code.")
+    #if DEBUG
+    print("Initialization successed but the value is still nil, check your code.")
+    #endif
     throw UnexpectedInitializationFailure()
   }
   return v
