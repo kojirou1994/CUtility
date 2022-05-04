@@ -1,4 +1,4 @@
-public final class LazyCString {
+public final class LazyCopiedCString {
 
   public init(cString: UnsafePointer<CChar>, freeWhenDone: Bool) {
     self.cString = cString

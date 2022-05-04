@@ -40,7 +40,7 @@ final class CUtilityTests: XCTestCase {
   }
 
   func testLazyCString() {
-    let cstr = LazyCString(cString: getcwd(nil, 0), freeWhenDone: true)
+    let cstr = LazyCopiedCString(cString: getcwd(nil, 0), freeWhenDone: true)
     XCTAssertEqual(cstr.string, String(cString: cstr.cString))
   }
 }
