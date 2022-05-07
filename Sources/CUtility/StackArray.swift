@@ -35,10 +35,10 @@ extension StackArray: Collection, RandomAccessCollection {
   }
 
   @inlinable
-  public func index(after i: Index) -> Index { i + 1 }
+  public func index(after i: Int) -> Int { i + 1 }
 
   @inlinable
-  public func index(before i: Index) -> Index { i - 1 }
+  public func index(before i: Int) -> Int { i - 1 }
 }
 
 public typealias CStackArray4<Element> = StackArray<(Element, Element, Element, Element), Element>
