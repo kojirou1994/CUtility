@@ -9,8 +9,13 @@ struct stack_string null_terminated_stack_string() {
   struct stack_string value = {"abc"};
   return value;
 }
+
 struct stack_string nonnull_terminated_stack_string() {
   struct stack_string value = {"abcd"};
   return value;
+}
+
+char stack_string_char_at(struct stack_string str, int index) {
+  return str.string[index];
 }
 #endif /* stack_string_h */

@@ -43,4 +43,13 @@ final class CUtilityTests: XCTestCase {
     let cstr = LazyCopiedCString(cString: getcwd(nil, 0), freeWhenDone: true)
     XCTAssertEqual(cstr.string, String(cString: cstr.cString))
   }
+
+  func testCStackArray() {
+    let stackString = nonnull_terminated_stack_string()
+    XCTAssertEqual(CStackArray4(value: stackString.string)[1], Int8(UInt8(ascii: "b")))
+    for index in 0...3 {
+      XCTAssertEqual(stack_string_char_at(stackString, numericCast(index)),
+                     CStackArray4(value: stackString.string)[index])
+    }
+  }
 }
