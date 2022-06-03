@@ -39,9 +39,22 @@ final class CUtilityTests: XCTestCase {
     }
   }
 
-  func testLazyCString() {
-    let cstr = LazyCopiedCString(cString: getcwd(nil, 0), freeWhenDone: true)
-    XCTAssertEqual(cstr.string, String(cString: cstr.cString))
+  func testLazyCopiedCString() {
+    let string = "ABCD"
+    do {
+      let needFreeContent = LazyCopiedCString(cString: strdup(string), freeWhenDone: true)
+      XCTAssertEqual(string, needFreeContent.string)
+    }
+
+    string.withCString { cString in
+      let noFreeContent = LazyCopiedCString(cString: cString, freeWhenDone: false)
+      XCTAssertEqual(string, noFreeContent.string)
+    }
+
+    let forceLength = 2
+    let partialString = LazyCopiedCString(cString: strdup(string), forceLength: forceLength, freeWhenDone: true)
+    XCTAssertEqual(forceLength, partialString.length)
+    XCTAssertTrue(string.prefix(forceLength) == partialString.string)
   }
 
   func testCStackArray() {
