@@ -66,14 +66,15 @@ final class CUtilityTests: XCTestCase {
     }
   }
 
-  func testCMacroCast() {
-    struct COption: OptionSet {
-      let rawValue: UInt32 /* different integer type */
-      static var high: Self {
-        .init(rawValue: macroCast(C_MACRO_OPTION_HIGH))
-      }
+  struct CMacroOptions: OptionSet {
+    let rawValue: UInt16 /* different integer type */
+    static var high: Self {
+      .init(macroValue: C_MACRO_OPTION_HIGH)
     }
-    XCTAssertTrue(COption(rawValue: 1 << 31).contains(.high))
-//    let missCasted = COption(rawValue: numericCast(C_MACRO_HIGH))
+  }
+
+  func testCMacroCast() {
+    XCTAssertTrue(CMacroOptions(rawValue: 1 << 31).contains(.high))
+//    let missCasted = CMacroOptions(rawValue: numericCast(C_MACRO_HIGH))
   }
 }
