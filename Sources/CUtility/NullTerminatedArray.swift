@@ -1,13 +1,13 @@
 public struct NullTerminatedArray<T>: Sequence, IteratorProtocol {
 
-  private var current: UnsafePointer<T>?
+  private var current: UnsafePointer<T?>?
 
-  public init(_ pointer: UnsafePointer<T>?) {
+  public init(_ pointer: UnsafePointer<T?>?) {
     current = pointer
   }
 
-  public mutating func next() -> UnsafePointer<T>? {
-    if _slowPath(current == nil) {
+  public mutating func next() -> UnsafePointer<T?>? {
+    if _slowPath(current?.pointee == nil) {
       return nil
     }
     defer {
