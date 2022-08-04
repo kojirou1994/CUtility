@@ -1,19 +1,21 @@
 public struct NullTerminatedArray<T>: Sequence, IteratorProtocol {
 
-  private var current: UnsafePointer<T?>?
+  @usableFromInline
+  internal var current: UnsafePointer<T?>
 
-  public init(_ pointer: UnsafePointer<T?>?) {
+  public init(_ pointer: UnsafePointer<T?>) {
     current = pointer
   }
 
-  public mutating func next() -> UnsafePointer<T?>? {
-    if _slowPath(current?.pointee == nil) {
+  @inlinable
+  public mutating func next() -> UnsafePointer<T>? {
+    if _slowPath(current.pointee == nil) {
       return nil
     }
     defer {
-      current = current?.successor()
+      current = current.successor()
     }
-    return current
+    return .init(OpaquePointer(current))
   }
 
 }
