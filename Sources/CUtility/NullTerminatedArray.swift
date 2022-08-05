@@ -15,7 +15,7 @@ public struct NullTerminatedArray<T>: Sequence, IteratorProtocol {
     defer {
       current = current.successor()
     }
-    return .init(OpaquePointer(current))
+    return UnsafeRawPointer(current).assumingMemoryBound(to: T.self)
   }
 
 }

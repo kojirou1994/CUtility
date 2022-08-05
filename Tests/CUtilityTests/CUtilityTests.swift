@@ -67,7 +67,7 @@ final class CUtilityTests: XCTestCase {
   }
 
   struct CMacroOptions: OptionSet {
-    let rawValue: UInt16 /* different integer type */
+    let rawValue: UInt32 /* different integer type */
     static var high: Self {
       .init(macroValue: C_MACRO_OPTION_HIGH)
     }
