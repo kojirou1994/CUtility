@@ -77,4 +77,13 @@ final class CUtilityTests: XCTestCase {
     XCTAssertTrue(CMacroOptions(rawValue: 1 << 31).contains(.high))
 //    let missCasted = CMacroOptions(rawValue: numericCast(C_MACRO_HIGH))
   }
+
+  func testCStringArray() {
+    let swiftArray = [String](repeating: "ABCD", count: 20)
+    let cArray = CStringArray(swiftArray)
+    cArray.withUnsafeCArrayPointer { ptr in
+      XCTAssertEqual(NullTerminatedArray(ptr).map { String(cString: $0.pointee) }, swiftArray)
+    }
+  }
+
 }
