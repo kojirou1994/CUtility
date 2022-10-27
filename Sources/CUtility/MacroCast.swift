@@ -24,9 +24,12 @@ public func macroCast<T, U>(_ macroValue: T) -> U where T: FixedWidthInteger, U:
   return result
 }
 
-extension RawRepresentable where RawValue: FixedWidthInteger {
+public protocol MacroRawRepresentable: RawRepresentable where RawValue: FixedWidthInteger {
+}
+
+public extension MacroRawRepresentable {
   @inlinable @inline(__always)
-  public init<T: FixedWidthInteger>(macroValue: T) {
+  init<T: FixedWidthInteger>(macroValue: T) {
     self.init(rawValue: macroCast(macroValue))!
   }
 }
