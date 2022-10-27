@@ -3,6 +3,7 @@ public struct NullTerminatedArray<T>: Sequence, IteratorProtocol {
   @usableFromInline
   internal var current: UnsafePointer<T?>
 
+  @inlinable
   public init(_ pointer: UnsafePointer<T?>) {
     current = pointer
   }
