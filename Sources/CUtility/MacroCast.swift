@@ -28,8 +28,13 @@ public protocol MacroRawRepresentable: RawRepresentable where RawValue: FixedWid
 }
 
 public extension MacroRawRepresentable {
-  @inlinable @inline(__always)
+  @inlinable
   init<T: FixedWidthInteger>(macroValue: T) {
     self.init(rawValue: macroCast(macroValue))!
+  }
+
+  @inlinable @inline(__always)
+  init(macroValue: some RawRepresentable<some FixedWidthInteger>) {
+    self.init(macroValue: macroValue.rawValue)
   }
 }
