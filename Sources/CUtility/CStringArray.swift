@@ -1,5 +1,5 @@
 #if canImport(Darwin)
-import Darwin
+import Darwin.C
 #elseif canImport(Glibc)
 import Glibc
 #endif
