@@ -31,3 +31,16 @@ extension StaticCString: Equatable, Comparable {
     strcmp(lhs.cString, rhs.cString) < 0
   }
 }
+
+extension StaticCString: CVarArg {
+  @inlinable @inline(__always)
+  public var _cVarArgEncoding: [Int] {
+    cString._cVarArgEncoding
+  }
+}
+
+extension StaticCString: Hashable {
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(bytes: UnsafeRawBufferPointer(start: cString, count: UTF8._nullCodeUnitOffset(in: cString)))
+  }
+}
