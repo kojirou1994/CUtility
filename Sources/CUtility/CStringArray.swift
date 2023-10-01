@@ -19,7 +19,7 @@ public final class CStringArray {
 
 public extension CStringArray {
 
-  convenience init<T>(_ strings: T) where T: Sequence, T.Element: StringProtocol {
+  convenience init(_ strings: some Sequence<some ContiguousUTF8Bytes>) {
     self.init()
     append(contentsOf: strings)
   }
@@ -28,23 +28,15 @@ public extension CStringArray {
     try body(cArray)
   }
 
-  func append(owned ptr: UnsafeMutablePointer<CChar>) {
-    cArray[cArray.count-1] = ptr
+  func append(_ string: consuming DynamicCString) {
+    cArray[cArray.count-1] = string.take()
     cArray.append(nil)
   }
 
-  func append<T: StringProtocol>(_ string: T) {
-    string.withCString { string in
-      append(owned: strdup(string)!)
-    }
-  }
-
-  func append<T>(contentsOf strings: T) where T: Sequence, T.Element: StringProtocol {
+  func append(contentsOf strings: some Sequence<some ContiguousUTF8Bytes>) {
     cArray.removeLast()
     strings.forEach { string in
-      string.withCString { string in
-        cArray.append(strdup(string)!)
-      }
+      cArray.append(DynamicCString.copy(bytes: string).take())
     }
     cArray.append(nil)
   }
