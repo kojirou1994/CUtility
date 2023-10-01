@@ -13,12 +13,14 @@ public struct StaticCString {
 
   public let cString: UnsafePointer<CChar>
 
-  @_alwaysEmitIntoClient
+  @inlinable
   public var string: String {
     String(cString: cString)
   }
 
 }
+
+extension StaticCString: Sendable {}
 
 extension StaticCString: Equatable, Comparable {
   @inlinable @inline(__always)
