@@ -48,7 +48,7 @@ public extension DynamicCString {
   @inlinable
   static func copy(bytes: some ContiguousUTF8Bytes) -> Self {
     .init(cString: bytes.withContiguousUTF8Bytes { buffer in
-      strndup(buffer.baseAddress, buffer.count)
+      strndup(buffer.baseAddress!, buffer.count)
     })
   }
 
