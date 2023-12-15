@@ -32,15 +32,22 @@ extension DynamicCString: Sendable {}
 
 public extension DynamicCString {
 
+  // optimize for one-time string
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
-  static func copy(cString: UnsafePointer<CChar>) -> Self {
+  static func copy(cString: String) -> Self {
     .init(cString: strdup(cString))
   }
 
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
-  static func copy(cString: StaticCString) -> Self {
+  static func copy(cString: some CStringConvertible) -> Self {
+    .init(cString: cString.withCString { strdup($0) })
+  }
+
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
+  static func copy(cString: borrowing DynamicCString) -> Self {
     copy(cString: cString.cString)
   }
 

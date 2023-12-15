@@ -34,6 +34,7 @@ public extension CStringArray {
   }
 
   func append(contentsOf strings: some Sequence<some ContiguousUTF8Bytes>) {
+    reserveCapacity(strings.underestimatedCount)
     cArray.removeLast()
     strings.forEach { string in
       cArray.append(DynamicCString.copy(bytes: string).take())
