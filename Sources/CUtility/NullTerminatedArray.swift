@@ -3,12 +3,12 @@ public struct NullTerminatedArray<T>: Sequence, IteratorProtocol {
   @usableFromInline
   internal var current: UnsafePointer<T?>
 
-  @inlinable
+  @_alwaysEmitIntoClient @inlinable @inline(__always)
   public init(_ pointer: UnsafePointer<T?>) {
     current = pointer
   }
 
-  @inlinable
+  @_alwaysEmitIntoClient @inlinable @inline(__always)
   public mutating func next() -> UnsafePointer<T>? {
     if _slowPath(current.pointee == nil) {
       return nil
@@ -23,14 +23,18 @@ public struct NullTerminatedArray<T>: Sequence, IteratorProtocol {
 
 public struct NullKeyPathTerminatedArray<T, R>: Sequence, IteratorProtocol {
 
-  private var current: UnsafePointer<T>
-  private let keypath: KeyPath<T, R?>
+  @usableFromInline
+  internal var current: UnsafePointer<T>
+  @usableFromInline
+  internal let keypath: KeyPath<T, R?>
 
+  @_alwaysEmitIntoClient @inlinable @inline(__always)
   public init(_ pointer: UnsafePointer<T>, keypath: KeyPath<T, R?>) {
     current = pointer
     self.keypath = keypath
   }
 
+  @_alwaysEmitIntoClient @inlinable @inline(__always)
   public mutating func next() -> UnsafePointer<T>? {
     if _slowPath(current.pointee[keyPath: keypath] == nil) {
       return nil

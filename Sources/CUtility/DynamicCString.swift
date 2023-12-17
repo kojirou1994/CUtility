@@ -17,13 +17,14 @@ public struct DynamicCString: ~Copyable {
   @inlinable
   public consuming func take() -> UnsafeMutablePointer<CChar> {
     let v = cString
+    // don't release the string
     discard self
     return v
   }
 
   @inlinable
   deinit {
-    cString.deallocate()
+    free(cString)
   }
 
 }

@@ -59,7 +59,6 @@ public struct CStringGenericMacro: PeerMacro {
     var parameterNames = [TokenSyntax]()
     for idx in parameterList.indices {
       var param = parameterList[idx]
-      print(param.type)
       if param.type.description == "String" {
         parameterNames.append(param.secondName ?? param.firstName)
         param.type = "some CStringConvertible"

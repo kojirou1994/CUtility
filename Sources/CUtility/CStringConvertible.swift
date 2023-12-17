@@ -41,3 +41,10 @@ extension StaticCString: CStringConvertible {
     try body(cString)
   }
 }
+
+#if canImport(System)
+import System
+
+@available(macOS 11.0, iOS 14.0, watchOS 7.0, tvOS 14.0, *)
+extension FilePath: CStringConvertible {}
+#endif

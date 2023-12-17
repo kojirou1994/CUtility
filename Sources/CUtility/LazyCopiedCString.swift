@@ -12,6 +12,11 @@ public final class LazyCopiedCString {
     self.init(cString: cString.cString, freeWhenDone: false)
   }
 
+  @inlinable
+  public convenience init(_ cString: consuming DynamicCString) {
+    self.init(cString: cString.take(), freeWhenDone: true)
+  }
+
   public let cString: UnsafePointer<CChar>
   @usableFromInline
   internal let forceLength: Int?
