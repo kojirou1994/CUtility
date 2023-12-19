@@ -61,3 +61,10 @@ public extension DynamicCString {
   }
 
 }
+
+extension DynamicCString {
+  @inlinable @inline(__always)
+  public func withMutableCString<Result>(_ body: (UnsafeMutablePointer<CChar>) throws -> Result) rethrows -> Result {
+    try body(cString)
+  }
+}
