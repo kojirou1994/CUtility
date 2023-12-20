@@ -35,6 +35,15 @@ extension ContiguousUTF8Bytes where Self: ContiguousBytes {
   }
 }
 
+extension ContiguousUTF8Bytes where Self: CStringConvertible {
+  @inlinable @inline(__always)
+  public func withContiguousUTF8Bytes<R>(_ body: (UnsafeRawBufferPointer) -> R) -> R {
+    withCString { cString in
+      body(.init(start: cString, count: strlen(cString)))
+    }
+  }
+}
+
 extension UnsafeRawBufferPointer: ContiguousUTF8Bytes {}
 extension UnsafeMutableRawBufferPointer: ContiguousUTF8Bytes {}
 extension UnsafeBufferPointer: ContiguousUTF8Bytes where Element == UInt8 {}
