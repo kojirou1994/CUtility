@@ -4,7 +4,7 @@ import Darwin.C
 import Glibc
 #endif
 
-public struct StaticCString {
+public struct StaticCString: @unchecked Sendable {
 
   @_alwaysEmitIntoClient
   public init(cString: UnsafePointer<CChar>) {
@@ -19,8 +19,6 @@ public struct StaticCString {
   }
 
 }
-
-extension StaticCString: Sendable {}
 
 extension StaticCString: Equatable, Comparable {
   @inlinable @inline(__always)

@@ -4,10 +4,11 @@ import Darwin.C
 import Glibc
 #endif
 
-public struct DynamicCString: ~Copyable {
+public struct DynamicCString: ~Copyable, @unchecked Sendable {
 
   @inlinable
   public init(cString: consuming UnsafeMutablePointer<CChar>) {
+    assert(strlen(cString) <= .max, "invalid cString!")
     self.cString = cString
   }
 
@@ -28,8 +29,6 @@ public struct DynamicCString: ~Copyable {
   }
 
 }
-
-extension DynamicCString: Sendable {}
 
 public extension DynamicCString {
 
