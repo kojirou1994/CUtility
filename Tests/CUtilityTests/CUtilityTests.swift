@@ -22,13 +22,8 @@ final class CUtilityTests: XCTestCase {
   }
 
   func testSafeInitialize() {
-    XCTAssertNoThrow(try safeInitialize({ $0 = 1 }))
-    XCTAssertEqual(try! safeInitialize({ $0 = 1 }), 1)
-
-    // built-in error
-    XCTAssertThrowsError(try safeInitialize({ (v: inout Int?) in })) { error in
-      XCTAssertTrue(error is UnexpectedInitializationFailure)
-    }
+    XCTAssertNoThrow(safeInitialize({ $0 = 1 }))
+    XCTAssertEqual(safeInitialize({ $0 = 1 }), 1)
 
     struct CustomError: Error {}
     // user's error
