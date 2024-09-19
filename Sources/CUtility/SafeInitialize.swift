@@ -1,4 +1,6 @@
-public func safeInitialize<T>(_ body: (inout T?) throws -> Void) throws -> T {
+@_alwaysEmitIntoClient
+@inlinable @inline(__always)
+public func safeInitialize<T, E: Error>(_ body: (inout T?) throws(E) -> Void) throws(E) -> T {
   var temp: T?
   do {
     try body(&temp)
@@ -7,12 +9,8 @@ public func safeInitialize<T>(_ body: (inout T?) throws -> Void) throws -> T {
     throw error
   }
   guard let v = temp else {
-    #if DEBUG
-    print("Initialization successed but the value is still nil, check your code.")
-    #endif
-    throw UnexpectedInitializationFailure()
+    assertionFailure("Initialization successed but the value is still nil, check your code.")
+    return temp.unsafelyUnwrapped
   }
   return v
 }
-
-public struct UnexpectedInitializationFailure: Error {}
