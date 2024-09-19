@@ -12,6 +12,7 @@ extension FixedWidthInteger {
   }
 }
 
+@_alwaysEmitIntoClient
 @inlinable @inline(__always)
 public func macroCast<T, U>(_ macroValue: T) -> U where T: FixedWidthInteger, U: FixedWidthInteger {
 
@@ -28,11 +29,13 @@ public protocol MacroRawRepresentable: RawRepresentable where RawValue: FixedWid
 }
 
 public extension MacroRawRepresentable {
-  @inlinable
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
   init<T: FixedWidthInteger>(macroValue: T) {
     self.init(rawValue: macroCast(macroValue))!
   }
 
+  @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   init(macroValue: some RawRepresentable<some FixedWidthInteger>) {
     self.init(macroValue: macroValue.rawValue)

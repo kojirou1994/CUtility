@@ -1,18 +1,21 @@
 public final class LazyCopiedCString {
 
-  @inlinable
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
   public init(cString: UnsafePointer<CChar>, forceLength: Int? = nil, freeWhenDone: Bool) {
     self.cString = cString
     self.forceLength = forceLength
     self.freeWhenDone = freeWhenDone
   }
 
-  @inlinable
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
   public convenience init(_ cString: StaticCString) {
     self.init(cString: cString.cString, freeWhenDone: false)
   }
 
-  @inlinable
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
   public convenience init(_ cString: consuming DynamicCString) {
     self.init(cString: cString.take(), freeWhenDone: true)
   }
@@ -33,7 +36,8 @@ public final class LazyCopiedCString {
     String(decoding: UnsafeRawBufferPointer(start: cString, count: length), as: UTF8.self)
   }()
 
-  @inlinable
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
   deinit {
     if freeWhenDone {
       cString.deallocate()

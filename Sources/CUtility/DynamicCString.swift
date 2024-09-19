@@ -6,7 +6,8 @@ import Glibc
 
 public struct DynamicCString: ~Copyable, @unchecked Sendable {
 
-  @inlinable
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
   public init(cString: consuming UnsafeMutablePointer<CChar>) {
     assert(strlen(cString) <= .max, "invalid cString!")
     self.cString = cString
@@ -15,7 +16,8 @@ public struct DynamicCString: ~Copyable, @unchecked Sendable {
   @usableFromInline
   internal let cString: UnsafeMutablePointer<CChar>
 
-  @inlinable
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
   public consuming func take() -> UnsafeMutablePointer<CChar> {
     let v = cString
     // don't release the string
@@ -23,7 +25,8 @@ public struct DynamicCString: ~Copyable, @unchecked Sendable {
     return v
   }
 
-  @inlinable
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
   deinit {
     free(cString)
   }

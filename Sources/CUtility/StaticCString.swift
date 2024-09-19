@@ -7,13 +7,15 @@ import Glibc
 public struct StaticCString: @unchecked Sendable {
 
   @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
   public init(cString: UnsafePointer<CChar>) {
     self.cString = cString
   }
 
   public let cString: UnsafePointer<CChar>
 
-  @inlinable
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
   public var string: String {
     String(cString: cString)
   }
@@ -21,11 +23,13 @@ public struct StaticCString: @unchecked Sendable {
 }
 
 extension StaticCString: Equatable, Comparable {
+  @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   public static func == (lhs: Self, rhs: Self) -> Bool {
     strcmp(lhs.cString, rhs.cString) == 0
   }
 
+  @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   public static func < (lhs: StaticCString, rhs: StaticCString) -> Bool {
     strcmp(lhs.cString, rhs.cString) < 0
@@ -33,6 +37,7 @@ extension StaticCString: Equatable, Comparable {
 }
 
 extension StaticCString: CVarArg {
+  @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   public var _cVarArgEncoding: [Int] {
     cString._cVarArgEncoding
@@ -40,6 +45,8 @@ extension StaticCString: CVarArg {
 }
 
 extension StaticCString: Hashable {
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
   public func hash(into hasher: inout Hasher) {
     hasher.combine(bytes: UnsafeRawBufferPointer(start: cString, count: UTF8._nullCodeUnitOffset(in: cString)))
   }

@@ -1,6 +1,7 @@
 extension String {
 
-  @inlinable
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
   public init<T>(cStackString: __shared T, isNullTerminated: Bool = true) {
     precondition(MemoryLayout<T>.size > 0)
     self = withUnsafeBytes(of: cStackString) { buffer in
