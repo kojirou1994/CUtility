@@ -24,7 +24,7 @@ public extension CStringArray {
     append(contentsOf: strings)
   }
 
-  func withUnsafeCArrayPointer<R>(_ body: (UnsafePointer<UnsafeMutablePointer<CChar>?>) throws -> R) rethrows -> R {
+  func withUnsafeCArrayPointer<R: ~Copyable, E: Error>(_ body: (UnsafePointer<UnsafeMutablePointer<CChar>?>) throws(E) -> R) throws(E) -> R {
     try body(cArray)
   }
 
