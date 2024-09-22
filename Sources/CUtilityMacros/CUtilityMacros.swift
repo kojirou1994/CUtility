@@ -54,6 +54,9 @@ public struct CStringGenericMacro: PeerMacro {
     }
 
     let parameterList = funcDecl.signature.parameterClause.parameters
+    let needThrows = funcDecl.signature.effectSpecifiers?.throwsClause != nil
+    let tryString = needThrows ? "try " : ""
+
     var newParameterList = parameterList
     newParameterList = []
     var parameterNames = [TokenSyntax]()
@@ -70,8 +73,8 @@ public struct CStringGenericMacro: PeerMacro {
     let trailers = String(repeating: "}", count: parameterNames.count)
     let newBody: ExprSyntax =
       """
-        \(raw: headers)
-          return \(funcDecl.body!)()
+        \(raw: tryString)\(raw: headers)
+          return \(raw: tryString)\(funcDecl.body!)()
         \(raw: trailers)
       """
 
