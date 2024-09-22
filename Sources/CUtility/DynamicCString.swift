@@ -73,7 +73,7 @@ extension DynamicCString {
 
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
-  public static func withTemporaryBorrowed<R: ~Copyable>(cString: UnsafeMutablePointer<CChar>, _ body: (borrowing DynamicCString) throws -> R) rethrows -> R {
+  public static func withTemporaryBorrowed<R: ~Copyable, E: Error>(cString: UnsafeMutablePointer<CChar>, _ body: (borrowing DynamicCString) throws(E) -> R) throws(E) -> R {
     let str = DynamicCString(cString: cString)
     do {
       let result = try body(str)
