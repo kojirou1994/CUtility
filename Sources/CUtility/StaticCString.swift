@@ -11,9 +11,11 @@ public struct StaticCString: @unchecked Sendable {
   public init(cString: UnsafePointer<CChar>) {
     self.cString = cString
   }
-
+  
+  /// don't release the string
   public let cString: UnsafePointer<CChar>
-
+  
+  /// copy a new string
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   public var string: String {

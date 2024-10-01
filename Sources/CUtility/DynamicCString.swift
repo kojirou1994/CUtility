@@ -25,6 +25,13 @@ public struct DynamicCString: ~Copyable, @unchecked Sendable {
     return v
   }
 
+  /// copy a new string
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
+  public var string: String {
+    String(cString: cString)
+  }
+
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   deinit {
