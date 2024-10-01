@@ -1,6 +1,6 @@
 @_alwaysEmitIntoClient
 @inlinable @inline(__always)
-public func safeInitialize<T, E: Error>(_ body: (inout T?) throws(E) -> Void) throws(E) -> T {
+public func safeInitialize<T: ~Copyable, E: Error>(_ body: (inout T?) throws(E) -> Void) throws(E) -> T {
   var temp: T?
   do {
     try body(&temp)
@@ -9,8 +9,7 @@ public func safeInitialize<T, E: Error>(_ body: (inout T?) throws(E) -> Void) th
     throw error
   }
   guard let v = temp else {
-    assertionFailure("Initialization successed but the value is still nil, check your code.")
-    return temp.unsafelyUnwrapped
+    preconditionFailure("Initialization successed but the value is still nil, check your code.")
   }
   return v
 }
