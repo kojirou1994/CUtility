@@ -33,7 +33,7 @@ enum CustomError: Error, CustomStringConvertible {
 
  to
  static func copy(cString: some CStringConvertible) -> Self {
-   cString.withCString { cString in
+   cString.withUnsafeCString { cString in
      .init(cString: strdup(cString))
    }
  }
@@ -69,7 +69,7 @@ public struct CStringGenericMacro: PeerMacro {
       newParameterList.append(param)
     }
 
-    let headers = parameterNames.map { "\($0).withCString { \($0) in" }.joined(separator: "\n")
+    let headers = parameterNames.map { "\($0).withUnsafeCString { \($0) in" }.joined(separator: "\n")
     let trailers = String(repeating: "}", count: parameterNames.count)
     let newBody: ExprSyntax =
       """
