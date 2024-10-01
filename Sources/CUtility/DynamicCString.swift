@@ -52,7 +52,7 @@ public extension DynamicCString {
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   static func copy(cString: some CStringConvertible) -> Self {
-    .init(cString: cString.withCString { strdup($0) })
+    .init(cString: cString.withUnsafeCString { strdup($0) })
   }
 
   @_alwaysEmitIntoClient
