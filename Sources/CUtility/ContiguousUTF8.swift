@@ -2,55 +2,72 @@ import Foundation
 
 public protocol ContiguousUTF8Bytes: ~Copyable {
   /// Invokes the given closure with a buffer containing the UTF-8 code unit sequence (excluding the null terminator).
-  func withContiguousUTF8Bytes<R, E: Error>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R
+  func withContiguousUTF8Bytes<R: ~Copyable, E: Error>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R
 }
 
 extension StaticString: ContiguousUTF8Bytes {
+  
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
-  public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error {
-    try toTypedThrows(E.self) {
-      try withUTF8Buffer { buf in Result { try body(.init(buf)) } }.get()
-    }
+  public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
+    try safeInitialize { (result: inout Result<R, E>?) in
+      withUTF8Buffer { buf in
+        result = .init { () throws(E) -> R in
+          try body(.init(buf))
+        }
+      }
+    }.get()
   }
 }
 
 extension String: ContiguousUTF8Bytes {
   @_alwaysEmitIntoClient
   @inlinable
-  public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error {
-    try toTypedThrows(E.self) {
+  public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
+    try safeInitialize { (result: inout Result<R, E>?) in
       var copy = self
-      return try copy.withUTF8 { try body(.init($0)) }
-    }
+      copy.withUTF8 { buf in
+        result = .init { () throws(E) -> R in
+          try body(.init(buf))
+        }
+      }
+    }.get()
   }
 }
 
 extension Substring: ContiguousUTF8Bytes {
   @_alwaysEmitIntoClient
   @inlinable
-  public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error {
-    try toTypedThrows(E.self) {
+  public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
+    try safeInitialize { (result: inout Result<R, E>?) in
       var copy = self
-      return try copy.withUTF8 { try body(.init($0)) }
-    }
+      copy.withUTF8 { buf in
+        result = .init { () throws(E) -> R in
+          try body(.init(buf))
+        }
+      }
+    }.get()
   }
 }
 
 extension ContiguousUTF8Bytes where Self: ContiguousBytes {
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
-  public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error {
-    try toTypedThrows(E.self) {
-      try withUnsafeBytes(body)
-    }
+  public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
+    try safeInitialize { (result: inout Result<R, E>?) in
+      withUnsafeBytes { buf in
+        result = .init { () throws(E) -> R in
+          try body(.init(buf))
+        }
+      }
+    }.get()
   }
 }
 
 extension ContiguousUTF8Bytes where Self: CStringConvertible & ~Copyable {
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
-  public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error {
+  public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     try withUnsafeCString { cString throws(E) in
       try body(.init(start: cString, count: strlen(cString)))
     }
