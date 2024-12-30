@@ -82,12 +82,6 @@ extension DynamicCString {
 
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
-  public func withCString<Result: ~Copyable, E: Error>(_ body: (UnsafePointer<CChar>) throws(E) -> Result) throws(E) -> Result {
-    try body(cString)
-  }
-
-  @_alwaysEmitIntoClient
-  @inlinable @inline(__always)
   public mutating func withMutableCString<Result: ~Copyable, E: Error>(_ body: (UnsafeMutablePointer<CChar>) throws(E) -> Result) throws(E) -> Result {
     try body(cString)
   }

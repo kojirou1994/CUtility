@@ -21,6 +21,16 @@ public struct DynamicCStringWithLength: ~Copyable {
   public private(set) var length: Int
 }
 
+extension DynamicCStringWithLength {
+
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
+  public mutating func withMutableCString<Result: ~Copyable, E: Error>(_ body: (UnsafeMutablePointer<CChar>) throws(E) -> Result) throws(E) -> Result {
+    try cString.withMutableCString(body)
+  }
+
+}
+
 extension DynamicCStringWithLength: ContiguousUTF8Bytes {
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     try body(.init(start: cString.cString, count: length))
