@@ -41,7 +41,7 @@ final class CUtilityTests: XCTestCase {
       XCTAssertEqual(string, needFreeContent.string)
     }
 
-    string.withCString { cString in
+    string.withUnsafeCString { cString in
       let noFreeContent = LazyCopiedCString(cString: cString, freeWhenDone: false)
       XCTAssertEqual(string, noFreeContent.string)
     }

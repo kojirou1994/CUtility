@@ -9,8 +9,8 @@ public struct DynamicCString: ~Copyable, @unchecked Sendable {
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   public init(cString: consuming UnsafeMutablePointer<CChar>) {
-    assert(strlen(cString) <= .max, "invalid cString!")
     self.cString = cString
+    assert(length <= .max, "invalid cString!")
   }
 
   @usableFromInline
@@ -30,6 +30,13 @@ public struct DynamicCString: ~Copyable, @unchecked Sendable {
   @inlinable @inline(__always)
   public var string: String {
     String(cString: cString)
+  }
+
+  /// strlen, O(n)
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
+  public var length: Int {
+    UTF8._nullCodeUnitOffset(in: cString)
   }
 
   @_alwaysEmitIntoClient
@@ -72,9 +79,16 @@ public extension DynamicCString {
 }
 
 extension DynamicCString {
+
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
-  public func withMutableCString<Result: ~Copyable, E: Error>(_ body: (UnsafeMutablePointer<CChar>) throws(E) -> Result) throws(E) -> Result {
+  public func withCString<Result: ~Copyable, E: Error>(_ body: (UnsafePointer<CChar>) throws(E) -> Result) throws(E) -> Result {
+    try body(cString)
+  }
+
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
+  public mutating func withMutableCString<Result: ~Copyable, E: Error>(_ body: (UnsafeMutablePointer<CChar>) throws(E) -> Result) throws(E) -> Result {
     try body(cString)
   }
 
