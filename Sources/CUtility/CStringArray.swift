@@ -19,7 +19,7 @@ public final class CStringArray {
   }
 
   deinit {
-    cArray.dropFirst().forEach { free($0) }
+    cArray.dropLast().forEach { free($0) }
   }
 }
 
