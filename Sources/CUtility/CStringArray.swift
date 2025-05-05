@@ -89,4 +89,3 @@ public func withTempUnsafeCStringArray<R, E: Error>(_ args: some Sequence<some C
     return try body(cStrings)
   }
 }
-}
