@@ -10,14 +10,20 @@ import Android
 import WASILibc
 #endif
 
-public final class CStringArray {
 
-  private var cArray: [UnsafeMutablePointer<CChar>?]
+public struct CStringArray: ~Copyable {
 
+  @_alwaysEmitIntoClient
+  private(set) var cArray: [UnsafeMutablePointer<CChar>?]
+
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
   public init() {
     cArray = [nil]
   }
 
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
   deinit {
     cArray.dropLast().forEach { free($0) }
   }
@@ -25,31 +31,63 @@ public final class CStringArray {
 
 public extension CStringArray {
 
-  convenience init(_ strings: some Sequence<some ContiguousUTF8Bytes>) {
-    self.init()
-    append(contentsOf: strings)
-  }
-
-  func withUnsafeCArrayPointer<R: ~Copyable, E: Error>(_ body: (UnsafePointer<UnsafeMutablePointer<CChar>?>) throws(E) -> R) throws(E) -> R {
-    try body(cArray)
-  }
-
-  func append(_ string: consuming DynamicCString) {
-    cArray[cArray.count-1] = string.take()
-    cArray.append(nil)
-  }
-
-  func append(contentsOf strings: some Sequence<some ContiguousUTF8Bytes>) {
+  @_alwaysEmitIntoClient
+  @inlinable
+  init(_ strings: some Sequence<some ContiguousUTF8Bytes>) {
+    cArray = .init()
     reserveCapacity(strings.underestimatedCount)
-    cArray.removeLast()
     strings.forEach { string in
       cArray.append(DynamicCString.copy(bytes: string).take())
     }
     cArray.append(nil)
   }
 
-  func reserveCapacity(_ n: Int) {
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
+  borrowing func withUnsafeCArrayPointer<R: ~Copyable, E: Error>(_ body: (UnsafePointer<UnsafeMutablePointer<CChar>?>) throws(E) -> R) throws(E) -> R {
+    try body(cArray)
+  }
+
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
+  mutating func append(_ string: consuming DynamicCString) {
+    cArray[cArray.count-1] = string.take()
+    cArray.append(nil)
+  }
+
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
+  mutating func reserveCapacity(_ n: Int) {
     cArray.reserveCapacity(n)
   }
 
+}
+
+@_alwaysEmitIntoClient
+public func withTempUnsafeCStringArray<R, E: Error>(_ args: some Sequence<some ContiguousUTF8Bytes>, _ body: (_ argv: UnsafePointer<UnsafeMutablePointer<CChar>?>) throws(E) -> R) throws(E) -> R {
+
+  var argsOffsets = [0]
+  argsOffsets.reserveCapacity(args.underestimatedCount)
+  var currentOffset = 0
+  for arg in args {
+    currentOffset += arg.withContiguousUTF8Bytes(\.count) + 1
+    argsOffsets.append(currentOffset)
+  }
+
+  let argsBufferSize = currentOffset
+  var argsBuffer = [UInt8]()
+  argsBuffer.reserveCapacity(argsBufferSize)
+  for arg in args {
+    arg.withContiguousUTF8Bytes { argsBuffer.append(contentsOf: $0) }
+    argsBuffer.append(0)
+  }
+
+  return try argsBuffer.withUnsafeMutableBufferPointer { argsBuffer throws(E) in
+    let ptr = UnsafeMutableRawPointer(argsBuffer.baseAddress!)
+      .assumingMemoryBound(to: CChar.self)
+    var cStrings: [UnsafeMutablePointer<CChar>?] = argsOffsets.map { ptr + $0 }
+    cStrings[cStrings.count - 1] = nil
+    return try body(cStrings)
+  }
+}
 }
