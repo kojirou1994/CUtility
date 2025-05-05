@@ -24,14 +24,14 @@ extension String: ContiguousUTF8Bytes {
   @_alwaysEmitIntoClient
   @inlinable
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
-    try safeInitialize { (result: inout Result<R, E>?) in
+    var v: R!
+    try toTypedThrows(E.self) {
       var copy = self
-      copy.withUTF8 { buf in
-        result = .init { () throws(E) -> R in
-          try body(.init(buf))
-        }
+      try copy.withUTF8 { buf in
+        v = try body(.init(buf))
       }
-    }.get()
+    }
+    return v
   }
 }
 
@@ -39,14 +39,14 @@ extension Substring: ContiguousUTF8Bytes {
   @_alwaysEmitIntoClient
   @inlinable
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
-    try safeInitialize { (result: inout Result<R, E>?) in
+    var v: R!
+    try toTypedThrows(E.self) {
       var copy = self
-      copy.withUTF8 { buf in
-        result = .init { () throws(E) -> R in
-          try body(.init(buf))
-        }
+      try copy.withUTF8 { buf in
+        v = try body(.init(buf))
       }
-    }.get()
+    }
+    return v
   }
 }
 
@@ -54,13 +54,13 @@ extension ContiguousUTF8Bytes where Self: ContiguousBytes {
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
-    try safeInitialize { (result: inout Result<R, E>?) in
-      withUnsafeBytes { buf in
-        result = .init { () throws(E) -> R in
-          try body(.init(buf))
-        }
+    var v: R!
+    try toTypedThrows(E.self) {
+      try withUnsafeBytes { buf in
+        v = try body(.init(buf))
       }
-    }.get()
+    }
+    return v
   }
 }
 

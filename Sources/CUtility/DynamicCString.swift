@@ -64,7 +64,7 @@ public extension DynamicCString {
 
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
-  static func copy(cString: some CStringConvertible) -> Self {
+  static func copy(cString: borrowing some CStringConvertible & ~Copyable) -> Self {
     .init(cString: cString.withUnsafeCString { strdup($0) })
   }
 
@@ -76,7 +76,7 @@ public extension DynamicCString {
 
   @_alwaysEmitIntoClient
   @inlinable
-  static func copy(bytes: some ContiguousUTF8Bytes) -> Self {
+  static func copy(bytes: borrowing some ContiguousUTF8Bytes & ~Copyable) -> Self {
     .init(cString: bytes.withContiguousUTF8Bytes { buffer in
       strndup(buffer.baseAddress!, buffer.count)
     })

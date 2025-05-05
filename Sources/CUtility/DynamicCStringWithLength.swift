@@ -1,5 +1,5 @@
 /// DynamicCString with cached length
-public struct DynamicCStringWithLength: ~Copyable {
+public struct DynamicCStringWithLength: ~Copyable, @unchecked Sendable {
 
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)

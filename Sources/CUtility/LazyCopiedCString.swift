@@ -1,3 +1,4 @@
+@available(*, deprecated, message: "use DynamicCStringWithLength")
 public final class LazyCopiedCString {
 
   @_alwaysEmitIntoClient

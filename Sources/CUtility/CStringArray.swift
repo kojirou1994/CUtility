@@ -10,8 +10,7 @@ import Android
 import WASILibc
 #endif
 
-
-public struct CStringArray: ~Copyable {
+public struct CStringArray: ~Copyable, @unchecked Sendable {
 
   @_alwaysEmitIntoClient
   private(set) var cArray: [UnsafeMutablePointer<CChar>?]
