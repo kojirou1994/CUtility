@@ -6,13 +6,13 @@ extension String: CStringConvertible {
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   public func withUnsafeCString<R, E>(_ body: (UnsafePointer<CChar>) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
-    try safeInitialize { (result: inout Result<R, E>?) in
-      withCString { cString in
-        result = .init { () throws(E) -> R in
-          try body(cString)
-        }
+    var v: R!
+    try toTypedThrows(E.self) {
+      try withCString { cString in
+        v = try body(cString)
       }
-    }.get()
+    }
+    return v
   }
 }
 
@@ -20,13 +20,13 @@ extension Substring: CStringConvertible {
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   public func withUnsafeCString<R, E>(_ body: (UnsafePointer<CChar>) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
-    try safeInitialize { (result: inout Result<R, E>?) in
-      withCString { cString in
-        result = .init { () throws(E) -> R in
-          try body(cString)
-        }
+    var v: R!
+    try toTypedThrows(E.self) {
+      try withCString { cString in
+        v = try body(cString)
       }
-    }.get()
+    }
+    return v
   }
 }
 
@@ -86,13 +86,13 @@ extension FilePath: CStringConvertible {
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   public func withUnsafeCString<R, E>(_ body: (UnsafePointer<CChar>) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
-    try safeInitialize { (result: inout Result<R, E>?) in
-      withCString { cString in
-        result = .init { () throws(E) -> R in
-          try body(cString)
-        }
+    var v: R!
+    try toTypedThrows(E.self) {
+      try withCString { cString in
+        v = try body(cString)
       }
-    }.get()
+    }
+    return v
   }
 }
 #endif
