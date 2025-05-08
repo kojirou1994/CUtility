@@ -55,6 +55,17 @@ public extension CStringArray {
   }
 
   @_alwaysEmitIntoClient
+  @inlinable
+  mutating func append(contentsOf strings: some Sequence<some ContiguousUTF8Bytes>) {
+    cArray.removeLast()
+    reserveCapacity(strings.underestimatedCount)
+    strings.forEach { string in
+      cArray.append(DynamicCString.copy(bytes: string).take())
+    }
+    cArray.append(nil)
+  }
+
+  @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   mutating func reserveCapacity(_ n: Int) {
     cArray.reserveCapacity(n)

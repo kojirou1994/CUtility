@@ -12,6 +12,17 @@ final class CStringArrayTests: XCTestCase {
     }
   }
 
+  func testDynamicArray() {
+    var cArray = CStringArray()
+    for _ in 1...10 {
+      cArray.append(.copy(cString: "ABCD👌"))
+    }
+    cArray.append(contentsOf: repeatElement("ABCD👌", count: 10))
+    cArray.withUnsafeCArrayPointer { start in
+      XCTAssertEqual(NullTerminatedArray(start).map { String(cString: $0.pointee) }, swiftArray)
+    }
+  }
+
   func testTemp() {
     withTempUnsafeCStringArray(swiftArray) { start in
       XCTAssertEqual(NullTerminatedArray(start).map { String(cString: $0.pointee) }, swiftArray)
