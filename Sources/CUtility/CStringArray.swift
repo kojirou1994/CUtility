@@ -74,7 +74,7 @@ public extension CStringArray {
 }
 
 @_alwaysEmitIntoClient
-public func withTempUnsafeCStringArray<R, E: Error>(_ args: some Sequence<some ContiguousUTF8Bytes>, _ body: (_ argv: UnsafePointer<UnsafeMutablePointer<CChar>?>) throws(E) -> R) throws(E) -> R {
+public func withTempUnsafeCStringArray<R: ~Copyable, E: Error>(_ args: some Sequence<some ContiguousUTF8Bytes>, _ body: (_ argv: UnsafePointer<UnsafeMutablePointer<CChar>?>) throws(E) -> R) throws(E) -> R {
 
   var argsOffsets = [0]
   argsOffsets.reserveCapacity(args.underestimatedCount)
@@ -92,11 +92,15 @@ public func withTempUnsafeCStringArray<R, E: Error>(_ args: some Sequence<some C
     argsBuffer.append(0)
   }
 
-  return try argsBuffer.withUnsafeMutableBufferPointer { argsBuffer throws(E) in
+  var result: R!
+
+  try argsBuffer.withUnsafeMutableBufferPointer { argsBuffer throws(E) in
     let ptr = UnsafeMutableRawPointer(argsBuffer.baseAddress!)
       .assumingMemoryBound(to: CChar.self)
     var cStrings: [UnsafeMutablePointer<CChar>?] = argsOffsets.map { ptr + $0 }
     cStrings[cStrings.count - 1] = nil
-    return try body(cStrings)
+    result = try body(cStrings)
   }
+
+  return result
 }
