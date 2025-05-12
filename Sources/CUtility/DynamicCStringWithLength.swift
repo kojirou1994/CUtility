@@ -3,8 +3,15 @@ public struct DynamicCStringWithLength: ~Copyable, @unchecked Sendable {
 
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
-  public init(cString: consuming DynamicCString, forceLength: Int? = nil) {
-    self.length = forceLength ?? cString.length
+  public init(cString: consuming DynamicCString, forceLength: Int? = nil, fixTerminationNull: Bool = false) {
+    if let forceLength {
+      if fixTerminationNull {
+        cString.cString[forceLength] = 0
+      }
+      self.length = forceLength
+    } else {
+      self.length = cString.length
+    }
     self.cString = cString
   }
 
