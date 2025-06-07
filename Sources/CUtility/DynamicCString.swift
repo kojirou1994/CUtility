@@ -94,15 +94,32 @@ extension DynamicCString {
 
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
-  public static func withTemporaryBorrowed<R: ~Copyable, E: Error>(cString: UnsafePointer<CChar>, _ body: (borrowing DynamicCString) throws(E) -> R) throws(E) -> R {
-    let str = DynamicCString(cString: .init(mutating: cString)) // mutating but will be borrowing
-    do {
-      let result = try body(str)
-      _ = str.take()
-      return result
-    } catch {
-      _ = str.take()
-      throw error
+  public static func withTemporaryBorrowed<R: ~Copyable, E: Error>(cString: borrowing some CStringConvertible & ~Copyable, _ body: (borrowing DynamicCString) throws(E) -> R) throws(E) -> R {
+    try cString.withUnsafeCString { cString throws(E) in
+      let str = DynamicCString(cString: .init(mutating: cString)) // mutating but will be borrowing
+      do throws(E) {
+        let result = try body(str)
+        _ = str.take()
+        return result
+      } catch {
+        _ = str.take()
+        throw error
+      }
+    }
+  }
+
+  /// temporally copy a null-terminated cstring from bytes
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
+  public static func withTemporaryBorrowed<R: ~Copyable, E: Error>(bytes: borrowing some ContiguousUTF8Bytes & ~Copyable, _ body: (borrowing DynamicCString) throws(E) -> R) throws(E) -> R {
+    try toTypedThrows(E.self) {
+      try bytes.withContiguousUTF8Bytes { buff in
+        try withUnsafeTemporaryAllocation(of: UInt8.self, capacity: buff.count+1) { strBuff in
+          let result = strBuff.initialize(from: buff)
+          strBuff[result.index] = 0
+          return try withTemporaryBorrowed(cString: UnsafeRawPointer(strBuff.baseAddress.unsafelyUnwrapped).assumingMemoryBound(to: CChar.self), body)
+        }
+      }
     }
   }
 }
