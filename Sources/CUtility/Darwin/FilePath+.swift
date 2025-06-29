@@ -30,4 +30,19 @@ extension FilePath: ContiguousUTF8Bytes {
     return v
   }
 }
+
+@available(macOS 12.0, iOS 15.0, watchOS 8.0, tvOS 15.0, *)
+extension FilePath.Component: CStringConvertible {
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
+  public func withUnsafeCString<R, E>(_ body: (UnsafePointer<CChar>) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
+    var v: R!
+    try toTypedThrows(E.self) {
+      try withPlatformString { cString in
+        v = try body(cString)
+      }
+    }
+    return v
+  }
+}
 #endif
