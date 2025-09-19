@@ -1,5 +1,6 @@
 extension FixedWidthInteger {
-  @usableFromInline
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
   internal var bitsContainer: UInt64 {
     let bitsContainer: UInt64
     if signum() == -1 {
@@ -15,6 +16,9 @@ extension FixedWidthInteger {
 @_alwaysEmitIntoClient
 @inlinable @inline(__always)
 public func macroCast<T, U>(_ macroValue: T) -> U where T: FixedWidthInteger, U: FixedWidthInteger {
+  if T.self == U.self {
+    return macroValue as! U
+  }
 
   let bitsContainer = macroValue.bitsContainer
   let result = U(truncatingIfNeeded: bitsContainer)
