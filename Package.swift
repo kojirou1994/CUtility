@@ -23,7 +23,12 @@ let package = Package(
     ),
     .target(name: "CGeneric", dependencies: ["CUtilityMacros"]),
 
-    .target(name: "CUtility"),
+    .target(
+      name: "CUtility",
+      swiftSettings: [
+        .enableExperimentalFeature("Lifetimes"),
+      ],
+    ),
     .target(name: "CTestCode"),
     .testTarget(
       name: "CUtilityTests",
