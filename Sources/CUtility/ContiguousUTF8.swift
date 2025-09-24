@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol ContiguousUTF8Bytes: ~Copyable {
+public protocol ContiguousUTF8Bytes: ~Copyable, ~Escapable {
   /// Invokes the given closure with a buffer containing the UTF-8 code unit sequence (excluding the null terminator).
   func withContiguousUTF8Bytes<R: ~Copyable, E: Error>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R
 }
@@ -64,7 +64,7 @@ extension ContiguousUTF8Bytes where Self: ContiguousBytes {
   }
 }
 
-extension ContiguousUTF8Bytes where Self: CStringConvertible & ~Copyable {
+extension ContiguousUTF8Bytes where Self: CStringConvertible & ~Copyable & ~Escapable {
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {

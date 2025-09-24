@@ -1,4 +1,4 @@
-public protocol CStringConvertible: ~Copyable {
+public protocol CStringConvertible: ~Copyable, ~Escapable {
   func withUnsafeCString<R: ~Copyable, E: Error>(_ body: (UnsafePointer<CChar>) throws(E) -> R) throws(E) -> R
 }
 
