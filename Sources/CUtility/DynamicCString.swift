@@ -64,7 +64,7 @@ public extension DynamicCString {
 
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
-  static func copy(cString: borrowing some CStringConvertible & ~Copyable & ~Escapable) -> Self {
+  static func copy(cString: borrowing some CString) -> Self {
     .init(cString: cString.withUnsafeCString { strdup($0) })
   }
 
@@ -94,7 +94,7 @@ extension DynamicCString {
 
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
-  public static func withTemporaryBorrowed<R: ~Copyable, E: Error>(cString: borrowing some CStringConvertible & ~Copyable, _ body: (borrowing DynamicCString) throws(E) -> R) throws(E) -> R {
+  public static func withTemporaryBorrowed<R: ~Copyable, E: Error>(cString: borrowing some CString, _ body: (borrowing DynamicCString) throws(E) -> R) throws(E) -> R {
     try cString.withUnsafeCString { cString throws(E) in
       let str = DynamicCString(cString: .init(mutating: cString)) // mutating but will be borrowing
       do throws(E) {
