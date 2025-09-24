@@ -69,7 +69,7 @@ extension ContiguousUTF8Bytes where Self: CStringConvertible & ~Copyable & ~Esca
   @inlinable @inline(__always)
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     try withUnsafeCString { cString throws(E) in
-      try body(.init(start: cString, count: strlen(cString)))
+      try body(.init(start: cString, count: UTF8._nullCodeUnitOffset(in: cString)))
     }
   }
 }
