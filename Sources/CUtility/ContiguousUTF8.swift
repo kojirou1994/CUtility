@@ -1,5 +1,3 @@
-import Foundation
-
 public protocol ContiguousUTF8Bytes: ~Copyable, ~Escapable {
   /// Invokes the given closure with a buffer containing the UTF-8 code unit sequence (excluding the null terminator).
   func withContiguousUTF8Bytes<R: ~Copyable, E: Error>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R
@@ -50,14 +48,21 @@ extension Substring: ContiguousUTF8Bytes {
   }
 }
 
-extension ContiguousUTF8Bytes where Self: ContiguousBytes {
+extension ContiguousUTF8Bytes where Self: Sequence<UInt8> {
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     var v: R!
     try toTypedThrows(E.self) {
-      try withUnsafeBytes { buf in
+      let result: ()? = try withContiguousStorageIfAvailable { buf in
         v = try body(.init(buf))
+      }
+      if result == nil {
+        // no storage
+        assertionFailure("please provide storage, will copy all bytes in release mode!")
+        try ContiguousArray(self).withUnsafeBytes { buf in
+          v = try body(buf)
+        }
       }
     }
     return v
@@ -83,7 +88,14 @@ extension Array: ContiguousUTF8Bytes where Element == UInt8 {}
 extension ArraySlice: ContiguousUTF8Bytes where Element == UInt8 {}
 extension CollectionOfOne: ContiguousUTF8Bytes where Element == UInt8 {}
 extension ContiguousArray: ContiguousUTF8Bytes where Element == UInt8 {}
-extension Data: ContiguousUTF8Bytes {}
-extension DispatchData.Region: ContiguousUTF8Bytes {}
-extension EmptyCollection: ContiguousUTF8Bytes where Element == UInt8 {}
-extension Slice: ContiguousUTF8Bytes where Base: ContiguousBytes {}
+extension Slice: ContiguousUTF8Bytes where Element == UInt8 {}
+extension String.UTF8View: ContiguousUTF8Bytes {}
+extension Substring.UTF8View: ContiguousUTF8Bytes {}
+
+extension EmptyCollection: ContiguousUTF8Bytes where Element == UInt8 {
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
+  public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
+    try body(.init(start: nil, count: 0))
+  }
+}

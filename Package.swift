@@ -9,6 +9,7 @@ let package = Package(
   products: [
     .library(name: "CGeneric", targets: ["CGeneric"]),
     .library(name: "CUtility", targets: ["CUtility"]),
+    .library(name: "CUtilityDarwin", targets: ["CUtilityDarwin"]),
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-syntax.git", from: "601.0.1"),
@@ -29,6 +30,7 @@ let package = Package(
         .enableExperimentalFeature("Lifetimes"),
       ],
     ),
+    .target(name: "CUtilityDarwin", dependencies: ["CUtility"]),
     .target(name: "CTestCode"),
     .testTarget(
       name: "CUtilityTests",
