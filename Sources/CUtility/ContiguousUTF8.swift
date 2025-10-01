@@ -22,14 +22,7 @@ extension String: ContiguousUTF8Bytes {
   @_alwaysEmitIntoClient
   @inlinable
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
-    var v: R!
-    try toTypedThrows(E.self) {
-      var copy = self
-      try copy.withUTF8 { buf in
-        v = try body(.init(buf))
-      }
-    }
-    return v
+    try utf8.withContiguousUTF8Bytes(body)
   }
 }
 
@@ -37,14 +30,7 @@ extension Substring: ContiguousUTF8Bytes {
   @_alwaysEmitIntoClient
   @inlinable
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
-    var v: R!
-    try toTypedThrows(E.self) {
-      var copy = self
-      try copy.withUTF8 { buf in
-        v = try body(.init(buf))
-      }
-    }
-    return v
+    try utf8.withContiguousUTF8Bytes(body)
   }
 }
 
