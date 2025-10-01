@@ -33,7 +33,7 @@ extension StackArray: Collection, RandomAccessCollection {
     @inlinable @inline(__always)
     get {
       precondition(i >= 0 && i < count, "Index out of range")
-      return withUnsafeBytes(of: value) { buffer in
+      return _withUnprotectedUnsafeBytes(of: value) { buffer in
         buffer.baseAddress!.assumingMemoryBound(to: Element.self)[i]
       }
     }
