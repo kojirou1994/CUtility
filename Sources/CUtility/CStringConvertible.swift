@@ -6,13 +6,7 @@ extension String: CStringConvertible {
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   public func withUnsafeCString<R, E>(_ body: (UnsafePointer<CChar>) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
-    var v: R!
-    try toTypedThrows(E.self) {
-      try withCString { cString in
-        v = try body(cString)
-      }
-    }
-    return v
+    try body(self)
   }
 }
 
