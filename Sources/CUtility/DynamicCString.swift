@@ -55,13 +55,6 @@ public struct DynamicCString: ~Copyable, @unchecked Sendable {
 
 public extension DynamicCString {
 
-  // optimize for one-time string
-  @_alwaysEmitIntoClient
-  @inlinable @inline(__always)
-  static func copy(cString: String) -> Self {
-    .init(cString: strdup(cString))
-  }
-
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   static func copy(cString: borrowing some CString) -> Self {
@@ -111,7 +104,7 @@ extension DynamicCString {
   /// temporally copy a null-terminated cstring from bytes
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
-  public static func withTemporaryBorrowed<R: ~Copyable, E: Error>(bytes: borrowing some ContiguousUTF8Bytes & ~Copyable, _ body: (borrowing DynamicCString) throws(E) -> R) throws(E) -> R {
+  public static func withTemporaryBorrowed<R: ~Copyable, E: Error>(bytes: borrowing some ContiguousUTF8Bytes & ~Copyable & ~Escapable, _ body: (borrowing DynamicCString) throws(E) -> R) throws(E) -> R {
     try toTypedThrows(E.self) {
       try bytes.withContiguousUTF8Bytes { buff in
         try withUnsafeTemporaryAllocation(of: UInt8.self, capacity: buff.count+1) { strBuff in
