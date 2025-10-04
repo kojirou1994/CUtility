@@ -10,6 +10,7 @@ let package = Package(
     .library(name: "CGeneric", targets: ["CGeneric"]),
     .library(name: "CUtility", targets: ["CUtility"]),
     .library(name: "CUtilityDarwin", targets: ["CUtilityDarwin"]),
+    .library(name: "SyscallValue", targets: ["SyscallValue"]),
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-syntax.git", from: "601.0.1"),
@@ -38,5 +39,9 @@ let package = Package(
         "CUtility",
         "CTestCode",
       ]),
+    .target(name: "SyscallValue", dependencies: ["CUtility"]),
+    .testTarget(
+      name: "SyscallValueTests",
+      dependencies: ["SyscallValue"]),
   ]
 )
