@@ -86,10 +86,10 @@ extension EmptyCollection: ContiguousUTF8Bytes where Element == UInt8 {
   }
 }
 
-extension RawSpan: ContiguousUTF8Bytes {
-  @_alwaysEmitIntoClient
-  @inlinable @inline(__always)
-  public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
-    try withUnsafeBytes(body)
-  }
-}
+//extension RawSpan: ContiguousUTF8Bytes {
+//  @_alwaysEmitIntoClient
+//  @inlinable @inline(__always)
+//  public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
+//    try withUnsafeBytes(body)
+//  }
+//}
