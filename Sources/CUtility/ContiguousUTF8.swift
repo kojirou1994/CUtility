@@ -20,7 +20,7 @@ extension StaticString: ContiguousUTF8Bytes {
 
 extension String: ContiguousUTF8Bytes {
   @_alwaysEmitIntoClient
-  @inlinable
+  @inlinable @inline(__always)
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     try utf8.withContiguousUTF8Bytes(body)
   }
@@ -28,7 +28,7 @@ extension String: ContiguousUTF8Bytes {
 
 extension Substring: ContiguousUTF8Bytes {
   @_alwaysEmitIntoClient
-  @inlinable
+  @inlinable @inline(__always)
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     try utf8.withContiguousUTF8Bytes(body)
   }
