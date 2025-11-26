@@ -44,6 +44,7 @@ extension StaticCString: Equatable, Comparable {
   }
 }
 
+#if !$Embedded
 extension StaticCString: CVarArg {
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
@@ -51,6 +52,7 @@ extension StaticCString: CVarArg {
     cString._cVarArgEncoding
   }
 }
+#endif
 
 extension StaticCString: Hashable {
   @_alwaysEmitIntoClient

@@ -74,10 +74,10 @@ public extension CStringArray {
 }
 
 @_alwaysEmitIntoClient
-public func withTempUnsafeCStringArray<R: ~Copyable, E: Error>(_ args: some Sequence<some ContiguousUTF8Bytes>, _ body: (_ argv: UnsafePointer<UnsafeMutablePointer<CChar>?>) throws(E) -> R) throws(E) -> R {
+public func withTempUnsafeCStringArray<R: ~Copyable, E: Error>(_ args: some Collection<some ContiguousUTF8Bytes>, _ body: (_ argv: UnsafePointer<UnsafeMutablePointer<CChar>?>) throws(E) -> R) throws(E) -> R {
 
   var argsOffsets = [0]
-  argsOffsets.reserveCapacity(args.underestimatedCount)
+  argsOffsets.reserveCapacity(args.count)
   var currentOffset = 0
   for arg in args {
     currentOffset += arg.withContiguousUTF8Bytes(\.count) + 1
