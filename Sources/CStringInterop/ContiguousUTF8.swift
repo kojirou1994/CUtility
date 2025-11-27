@@ -3,18 +3,20 @@ public protocol ContiguousUTF8Bytes: ~Copyable, ~Escapable {
   func withContiguousUTF8Bytes<R: ~Copyable, E: Error>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R
 }
 
+import SwiftFix
+
 extension StaticString: ContiguousUTF8Bytes {
-  
+
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
-    try safeInitialize { (result: inout Result<R, E>?) in
-      withUTF8Buffer { buf in
-        result = .init { () throws(E) -> R in
-          try body(.init(buf))
-        }
+    var result: Result<R, E>!
+    withUTF8Buffer { buf in
+      result = .init { () throws(E) -> R in
+        try body(.init(buf))
       }
-    }.get()
+    }
+    return try result.get()
   }
 }
 

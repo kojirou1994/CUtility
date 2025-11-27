@@ -1,4 +1,4 @@
-#if canImport(System)
+#if canImport(System) && !$Embedded
 import System
 import CUtility
 

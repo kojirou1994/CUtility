@@ -1,3 +1,4 @@
+#if !$Embedded
 import Foundation
 
 extension Data: SyscallValue {
@@ -15,3 +16,4 @@ extension Data: SyscallValue {
   }
 
 }
+#endif

@@ -7,6 +7,8 @@ let package = Package(
   name: "CUtility",
   platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6), .macCatalyst(.v13)],
   products: [
+    .library(name: "SwiftFix", targets: ["SwiftFix"]),
+    .library(name: "CStringInterop", targets: ["CStringInterop"]),
     .library(name: "CUtility", targets: ["CUtility"]),
     .library(name: "CUtilityDarwin", targets: ["CUtilityDarwin"]),
     .library(name: "SyscallValue", targets: ["SyscallValue"]),
@@ -14,10 +16,18 @@ let package = Package(
   dependencies: [
   ],
   targets: [
+    .target(name: "SwiftFix"),
     .target(
-      name: "CUtility",
+      name: "CStringInterop",
+      dependencies: ["SwiftFix"],
       swiftSettings: [
         .enableExperimentalFeature("Lifetimes"),
+      ],
+    ),
+    .target(
+      name: "CUtility",
+      dependencies: ["CStringInterop"],
+      swiftSettings: [
       ],
     ),
     .target(name: "CUtilityDarwin", dependencies: ["CUtility"]),
