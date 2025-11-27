@@ -1,15 +1,3 @@
-#if canImport(Darwin)
-import Darwin.C
-#elseif canImport(Glibc)
-import Glibc
-#elseif canImport(Musl)
-import Musl
-#elseif canImport(Android)
-import Android
-#elseif canImport(WASILibc)
-import WASILibc
-#endif
-
 public struct StaticCString: @unchecked Sendable {
 
   @_alwaysEmitIntoClient
@@ -30,20 +18,6 @@ public struct StaticCString: @unchecked Sendable {
 
 }
 
-extension StaticCString: Equatable, Comparable {
-  @_alwaysEmitIntoClient
-  @inlinable @inline(__always)
-  public static func == (lhs: Self, rhs: Self) -> Bool {
-    strcmp(lhs.cString, rhs.cString) == 0
-  }
-
-  @_alwaysEmitIntoClient
-  @inlinable @inline(__always)
-  public static func < (lhs: StaticCString, rhs: StaticCString) -> Bool {
-    strcmp(lhs.cString, rhs.cString) < 0
-  }
-}
-
 #if !$Embedded
 extension StaticCString: CVarArg {
   @_alwaysEmitIntoClient
@@ -59,5 +33,13 @@ extension StaticCString: Hashable {
   @inlinable @inline(__always)
   public func hash(into hasher: inout Hasher) {
     hasher.combine(bytes: UnsafeRawBufferPointer(start: cString, count: UTF8._nullCodeUnitOffset(in: cString)))
+  }
+}
+
+extension StaticCString: CStringConvertible {
+  @_alwaysEmitIntoClient
+  @inlinable @inline(__always)
+  public func withUnsafeCString<R, E>(_ body: (UnsafePointer<CChar>) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
+    try body(cString)
   }
 }

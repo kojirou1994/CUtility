@@ -72,13 +72,6 @@ extension UnsafeMutablePointer: CStringConvertible where Pointee == CChar {
   }
 }
 
-//extension StaticCString: CStringConvertible {
-//  @_alwaysEmitIntoClient
-//  @inlinable @inline(__always)
-//  public func withUnsafeCString<R, E>(_ body: (UnsafePointer<CChar>) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
-//    try body(cString)
-//  }
-//}
 //
 //extension DynamicCString: CStringConvertible {
 //  @_alwaysEmitIntoClient
