@@ -16,9 +16,11 @@ extension FixedWidthInteger {
 @_alwaysEmitIntoClient
 @inlinable @inline(__always)
 public func macroCast<T, U>(_ macroValue: T) -> U where T: FixedWidthInteger, U: FixedWidthInteger {
+  #if !$Embedded
   if T.self == U.self {
     return macroValue as! U
   }
+  #endif
 
   let bitsContainer = macroValue.bitsContainer
   let result = U(truncatingIfNeeded: bitsContainer)
