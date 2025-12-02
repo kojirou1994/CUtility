@@ -40,20 +40,24 @@ extension ContiguousUTF8Bytes where Self: Sequence<UInt8> {
   @_alwaysEmitIntoClient
   @inlinable @inline(__always)
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
-    var v: R!
-    try toTypedThrows(E.self) {
-      let result: ()? = try withContiguousStorageIfAvailable { buf in
-        v = try body(.init(buf))
+    var result: Result<R, E>!
+
+    let v: ()? = withContiguousStorageIfAvailable { buf in
+      result = .init { () throws(E) -> R in
+        try body(.init(buf))
       }
-      if result == nil {
-        // no storage
-        assertionFailure("please provide storage, will copy all bytes in release mode!")
-        try ContiguousArray(self).withUnsafeBytes { buf in
-          v = try body(buf)
+    }
+    if v == nil {
+      // no storage
+      assertionFailure("please provide storage, will copy all bytes in release mode!")
+      ContiguousArray(self).withUnsafeBytes { buf in
+        result = .init { () throws(E) -> R in
+          try body(buf)
         }
       }
     }
-    return v
+
+    return try result.get()
   }
 }
 

@@ -24,14 +24,11 @@ extension StaticString: CStringConvertible {
       // copy to stack!
       var result: Result<R, E>!
       withUTF8Buffer { utf8 in
-        result = .init { () throws(E) -> R in
-          try toTypedThrows(E.self) {
-            try withUnsafeTemporaryAllocation(of: UInt8.self, capacity: utf8.count + 1) { string in
-              _ = string.initialize(from: utf8)
-              string[utf8.count] = 0
-
-              return try body(UnsafeRawPointer(string.baseAddress!).assumingMemoryBound(to: CChar.self))
-            }
+        withUnsafeTemporaryAllocation(of: UInt8.self, capacity: utf8.count + 1) { string in
+          _ = string.initialize(from: utf8)
+          string[utf8.count] = 0
+          result = .init { () throws(E) -> R in
+            try body(UnsafeRawPointer(string.baseAddress!).assumingMemoryBound(to: CChar.self))
           }
         }
       }
