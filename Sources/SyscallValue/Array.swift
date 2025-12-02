@@ -19,7 +19,7 @@ extension ContiguousArray: SyscallValue {
 
     #if !$Embedded
     self = try toTypedThrows(E.self) {
-      try Self(unsafeUninitializedCapacity: count) { buffer, initializedCount throws(E) in
+      try Self(unsafeUninitializedCapacity: count) { buffer, initializedCount in
         initializedCount = try initializer(.init(buffer)) / MemoryLayout<Element>.stride
       }
     }
