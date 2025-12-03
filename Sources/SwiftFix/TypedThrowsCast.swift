@@ -48,3 +48,46 @@ public func withUnsafeTemporaryAllocationTyped<T: ~Copyable, R: ~Copyable, E: Er
 
   return try result.get()
 }
+
+extension String {
+  @available(macOS 11.0, iOS 14.0, watchOS 7.0, tvOS 14.0, *)
+  @_alwaysEmitIntoClient @inlinable @inline(__always)
+  public static func create<E: Error>(unsafeUninitializedCapacity capacity: Int, initializingUTF8With initializer: (_ buffer: UnsafeMutableBufferPointer<UInt8>) throws(E) -> Int) throws(E) -> String {
+    var errorOut: E?
+
+    let str = String(unsafeUninitializedCapacity: capacity, initializingUTF8With: { buffer in
+      do throws(E) {
+        return try initializer(buffer)
+      } catch {
+        errorOut = error
+        return 0
+      }
+    })
+    if let errorOut {
+      throw errorOut
+    }
+    return str
+  }
+}
+
+
+extension ContiguousArray {
+  @_alwaysEmitIntoClient @inlinable @inline(__always)
+  public static func create<E: Error>(unsafeUninitializedCapacity: Int, initializingWith initializer: (_ buffer: inout UnsafeMutableBufferPointer<Element>, _ initializedCount: inout Int) throws(E) -> Void) throws(E) -> Self {
+    var errorOut: E?
+
+    let result = Self(unsafeUninitializedCapacity: unsafeUninitializedCapacity) { buffer, initializedCount in
+      do throws(E) {
+        try initializer(&buffer, &initializedCount)
+      } catch {
+        errorOut = error
+        initializedCount = 0
+      }
+    }
+
+    if let errorOut {
+      throw errorOut
+    }
+    return result
+  }
+}
