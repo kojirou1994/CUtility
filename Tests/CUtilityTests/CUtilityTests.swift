@@ -55,4 +55,28 @@ final class CUtilityTests: XCTestCase {
 //    let missCasted = CMacroOptions(rawValue: numericCast(C_MACRO_HIGH))
   }
 
+  func testContiguousStorageSegments() {
+    let count = 1024
+
+    // check all elements used
+    let repeatValue = 110
+    let noStorage = repeatElement(repeatValue, count: count)
+    var usedElements = 0
+    noStorage.withContiguousStorageSegments(capacity: 10) { buffer in
+      usedElements += buffer.count
+      XCTAssertTrue(buffer.allSatisfy { $0 == repeatValue } )
+    }
+    XCTAssertEqual(count, usedElements)
+
+    // check elements value
+    var rg = SystemRandomNumberGenerator()
+    let randomData = (1...count).map { _ in Int(bitPattern: rg.next()) }
+    XCTAssertEqual(count, randomData.count)
+    var copiedElements = [Int]()
+    randomData.withContiguousStorageSegments(capacity: 10) { buffer in
+      copiedElements.append(contentsOf: buffer)
+    }
+    XCTAssertEqual(randomData, copiedElements)
+  }
+
 }
