@@ -91,3 +91,16 @@ extension ContiguousArray {
     return result
   }
 }
+
+extension Sequence {
+  @_alwaysEmitIntoClient @inlinable @inline(__always)
+  public func withContiguousStorageIfAvailableTyped<R: ~Copyable, E: Error>(_ body: (_ buffer: UnsafeBufferPointer<Element>) throws(E) -> R) throws(E) -> R? {
+    var result: Result<R, E>?
+    withContiguousStorageIfAvailable { buffer in
+      result = .init { () throws(E) in
+        try body(buffer)
+      }
+    }
+    return try result?.get()
+  }
+}
