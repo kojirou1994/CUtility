@@ -7,6 +7,7 @@ let package = Package(
   name: "CUtility",
   platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6), .macCatalyst(.v13)],
   products: [
+    .library(name: "SwiftExperimental", targets: ["SwiftExperimental"]),
     .library(name: "SwiftFix", targets: ["SwiftFix"]),
     .library(name: "CStringInterop", targets: ["CStringInterop"]),
     .library(name: "CUtility", targets: ["CUtility"]),
@@ -16,6 +17,13 @@ let package = Package(
   dependencies: [
   ],
   targets: [
+    .target(
+      name: "SwiftExperimental",
+      swiftSettings: [
+        .enableExperimentalFeature("BuiltinModule"),
+        .enableExperimentalFeature("RawLayout"),
+      ],
+    ),
     .target(name: "SwiftFix"),
     .target(
       name: "CStringInterop",
