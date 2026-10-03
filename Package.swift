@@ -1,11 +1,11 @@
-// swift-tools-version: 6.4
+// swift-tools-version: 6.2
 
 import PackageDescription
 import CompilerPluginSupport
 
 let package = Package(
   name: "CUtility",
-  platforms: [.macOS(.v12), .iOS(.v15), .tvOS(.v15), .watchOS(.v9), .macCatalyst(.v15)],
+  platforms: [.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6), .macCatalyst(.v13)],
   products: [
     .library(name: "SwiftExperimental", targets: ["SwiftExperimental"]),
     .library(name: "SwiftFix", targets: ["SwiftFix"]),
