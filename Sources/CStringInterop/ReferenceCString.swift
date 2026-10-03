@@ -3,7 +3,7 @@ public struct ReferenceCString: Copyable, BitwiseCopyable, ~Escapable {
 
   @_lifetime(borrow cString)
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   public init(cString: UnsafePointer<CChar>) {
     self.cString = cString
   }
@@ -13,14 +13,14 @@ public struct ReferenceCString: Copyable, BitwiseCopyable, ~Escapable {
 
   /// copy a new string
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   public var string: String {
     String(cString: cString)
   }
 
   /// strlen, O(n)
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   public var length: Int {
     UTF8._nullCodeUnitOffset(in: cString)
   }
@@ -29,7 +29,7 @@ public struct ReferenceCString: Copyable, BitwiseCopyable, ~Escapable {
 
 extension ReferenceCString: CStringConvertible {
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   public func withUnsafeCString<R, E>(_ body: (UnsafePointer<CChar>) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     try body(cString)
   }

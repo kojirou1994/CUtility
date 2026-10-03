@@ -4,7 +4,7 @@ public protocol CStringConvertible: ~Copyable, ~Escapable {
 
 extension String: CStringConvertible {
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   public func withUnsafeCString<R, E>(_ body: (UnsafePointer<CChar>) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     try body(self)
   }
@@ -16,7 +16,7 @@ import SwiftFix
 // typealias StringLiteralType = StaticString
 extension StaticString: CStringConvertible {
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   public func withUnsafeCString<R, E>(_ body: (UnsafePointer<CChar>) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     if hasPointerRepresentation {
       return try body(UnsafeRawPointer(utf8Start).assumingMemoryBound(to: CChar.self))
@@ -39,7 +39,7 @@ extension StaticString: CStringConvertible {
 
 extension UnsafeRawPointer: CStringConvertible {
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   public func withUnsafeCString<R, E>(_ body: (UnsafePointer<CChar>) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     try body(self.assumingMemoryBound(to: CChar.self))
   }
@@ -47,7 +47,7 @@ extension UnsafeRawPointer: CStringConvertible {
 
 extension UnsafeMutableRawPointer: CStringConvertible {
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   public func withUnsafeCString<R, E>(_ body: (UnsafePointer<CChar>) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     try body(self.assumingMemoryBound(to: CChar.self))
   }
@@ -55,7 +55,7 @@ extension UnsafeMutableRawPointer: CStringConvertible {
 
 extension UnsafePointer: CStringConvertible where Pointee == CChar {
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   public func withUnsafeCString<R, E>(_ body: (UnsafePointer<CChar>) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     try body(self)
   }
@@ -63,7 +63,7 @@ extension UnsafePointer: CStringConvertible where Pointee == CChar {
 
 extension UnsafeMutablePointer: CStringConvertible where Pointee == CChar {
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   public func withUnsafeCString<R, E>(_ body: (UnsafePointer<CChar>) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     try body(self)
   }

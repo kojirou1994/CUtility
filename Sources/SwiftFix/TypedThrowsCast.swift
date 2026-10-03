@@ -2,7 +2,7 @@
 #if $Embedded
 
 @export(implementation)
-@inline(__always)
+@inline(always)
 public func toTypedThrows<Result: ~Copyable, E: Error>(_ error: E.Type, _ body: () throws(E) -> Result) throws(E) -> Result {
   try body()
 }
@@ -10,7 +10,7 @@ public func toTypedThrows<Result: ~Copyable, E: Error>(_ error: E.Type, _ body: 
 #else
 
 @export(implementation)
-@inline(__always)
+@inline(always)
 public func toTypedThrows<Result: ~Copyable, E: Error>(_ error: E.Type, _ body: () throws(any Error) -> Result) throws(E) -> Result {
   do {
     return try body()
@@ -51,7 +51,7 @@ public func withUnsafeTemporaryAllocationTyped<T: ~Copyable, R: ~Copyable, E: Er
 
 extension String {
   @available(macOS 11.0, iOS 14.0, watchOS 7.0, tvOS 14.0, *)
-  @export(implementation) @inline(__always)
+  @export(implementation) @inline(always)
   public static func create<E: Error>(unsafeUninitializedCapacity capacity: Int, initializingUTF8With initializer: (_ buffer: UnsafeMutableBufferPointer<UInt8>) throws(E) -> Int) throws(E) -> String {
     var errorOut: E?
 
@@ -72,7 +72,7 @@ extension String {
 
 
 extension ContiguousArray {
-  @export(implementation) @inline(__always)
+  @export(implementation) @inline(always)
   public static func create<E: Error>(unsafeUninitializedCapacity: Int, initializingWith initializer: (_ buffer: inout UnsafeMutableBufferPointer<Element>, _ initializedCount: inout Int) throws(E) -> Void) throws(E) -> Self {
     var errorOut: E?
 
@@ -93,7 +93,7 @@ extension ContiguousArray {
 }
 
 extension Sequence {
-  @export(implementation) @inline(__always)
+  @export(implementation) @inline(always)
   public func withContiguousStorageIfAvailableTyped<R: ~Copyable, E: Error>(_ body: (_ buffer: UnsafeBufferPointer<Element>) throws(E) -> R) throws(E) -> R? {
     var result: Result<R, E>?
     withContiguousStorageIfAvailable { buffer in

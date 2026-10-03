@@ -5,7 +5,7 @@ import CUtility
 @available(macOS 11.0, iOS 14.0, watchOS 7.0, tvOS 14.0, *)
 extension FilePath: CStringConvertible {
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   public func withUnsafeCString<R, E>(_ body: (UnsafePointer<CChar>) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     var v: R!
     try toTypedThrows(E.self) {
@@ -20,7 +20,7 @@ extension FilePath: CStringConvertible {
 @available(macOS 11.0, iOS 14.0, watchOS 7.0, tvOS 14.0, *)
 extension FilePath: ContiguousUTF8Bytes {
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     var v: R!
     try toTypedThrows(E.self) {
@@ -35,7 +35,7 @@ extension FilePath: ContiguousUTF8Bytes {
 @available(macOS 12.0, iOS 15.0, watchOS 8.0, tvOS 15.0, *)
 extension FilePath.Component: CStringConvertible {
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   public func withUnsafeCString<R, E>(_ body: (UnsafePointer<CChar>) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     var v: R!
     try toTypedThrows(E.self) {

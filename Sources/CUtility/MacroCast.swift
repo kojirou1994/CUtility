@@ -1,6 +1,6 @@
 extension FixedWidthInteger {
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   internal var bitsContainer: UInt64 {
     let bitsContainer: UInt64
     if signum() == -1 {
@@ -14,7 +14,7 @@ extension FixedWidthInteger {
 }
 
 @export(implementation)
-@inline(__always)
+@inline(always)
 public func macroCast<T, U>(_ macroValue: T) -> U where T: FixedWidthInteger, U: FixedWidthInteger {
   #if !$Embedded
   if T.self == U.self {
@@ -36,13 +36,13 @@ public protocol MacroRawRepresentable: RawRepresentable where RawValue: FixedWid
 
 public extension MacroRawRepresentable {
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   init<T: FixedWidthInteger>(macroValue: T) {
     self.init(rawValue: macroCast(macroValue))!
   }
 
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   init(macroValue: some RawRepresentable<some FixedWidthInteger>) {
     self.init(macroValue: macroValue.rawValue)
   }

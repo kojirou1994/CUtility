@@ -3,7 +3,7 @@ extension Bool {
   /// c bool convertion
   /// - Parameter cValue: 0 is false
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   public init<T: FixedWidthInteger>(cValue: T) {
     self = cValue != 0
   }
@@ -13,7 +13,7 @@ extension Bool {
 extension FixedWidthInteger {
   /// 0 is false
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   public var cBool: Bool {
     self != 0
   }
@@ -21,7 +21,7 @@ extension FixedWidthInteger {
   /// false is 0
   /// - Parameter cBool: swift Bool
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   public init(cBool: Bool) {
     self = cBool ? 1 : 0
   }

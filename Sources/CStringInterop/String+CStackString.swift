@@ -1,7 +1,7 @@
 extension String {
 
   @export(implementation)
-  @inline(__always)
+  @inline(always)
   public init<T>(cStackString: __shared T, isNullTerminated: Bool = true) {
     precondition(MemoryLayout<T>.size > 0)
     self = _withUnprotectedUnsafeBytes(of: cStackString) { buffer in
