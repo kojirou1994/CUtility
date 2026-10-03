@@ -1,8 +1,8 @@
 public struct StackArray<Value, Element> {
   public var value: Value
 
-  @_alwaysEmitIntoClient
-  @inlinable @inline(__always)
+  @export(implementation)
+  @inline(__always)
   public init(value: consuming Value, _ type: Element.Type = Element.self) {
     assert(MemoryLayout<Value>.stride > 0)
     assert(MemoryLayout<Element>.stride > 0)
@@ -14,23 +14,23 @@ public struct StackArray<Value, Element> {
 
 extension StackArray: Collection, RandomAccessCollection {
 
-  @_alwaysEmitIntoClient
-  @inlinable @inline(__always)
+  @export(implementation)
+  @inline(__always)
   public var count: Int {
     MemoryLayout<Value>.stride / MemoryLayout<Element>.stride
   }
 
-  @_alwaysEmitIntoClient
-  @inlinable @inline(__always)
+  @export(implementation)
+  @inline(__always)
   public var startIndex: Int { 0 }
 
-  @_alwaysEmitIntoClient
-  @inlinable @inline(__always)
+  @export(implementation)
+  @inline(__always)
   public var endIndex: Int { count }
 
   public subscript(i: Int) -> Element {
-    @_alwaysEmitIntoClient
-    @inlinable @inline(__always)
+    @export(implementation)
+    @inline(__always)
     get {
       precondition(i >= 0 && i < count, "Index out of range")
       return _withUnprotectedUnsafeBytes(of: value) { buffer in
@@ -39,12 +39,12 @@ extension StackArray: Collection, RandomAccessCollection {
     }
   }
 
-  @_alwaysEmitIntoClient
-  @inlinable @inline(__always)
+  @export(implementation)
+  @inline(__always)
   public func index(after i: Int) -> Int { i + 1 }
 
-  @_alwaysEmitIntoClient
-  @inlinable @inline(__always)
+  @export(implementation)
+  @inline(__always)
   public func index(before i: Int) -> Int { i - 1 }
 }
 

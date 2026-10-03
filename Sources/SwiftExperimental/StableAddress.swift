@@ -16,26 +16,25 @@ import Builtin
 @frozen
 @_rawLayout(like: Value, movesAsLike)
 public struct StableAddress<Value: ~Copyable>: ~Copyable {
-  @_alwaysEmitIntoClient
+  @export(implementation)
   @_transparent
   public var _address: UnsafeMutablePointer<Value> {
     unsafe UnsafeMutablePointer<Value>(_rawAddress)
   }
 
-  @_alwaysEmitIntoClient
+  @export(implementation)
   @_transparent
   internal var _rawAddress: Builtin.RawPointer {
     Builtin.addressOfRawLayout(self)
   }
 
-  @_alwaysEmitIntoClient
+  @export(implementation)
   @_transparent
   public init(_ initialValue: consuming Value) {
     unsafe _address.initialize(to: initialValue)
   }
 
-  @_alwaysEmitIntoClient
-  @inlinable
+  @export(implementation)
   deinit {
     unsafe _address.deinitialize(count: 1)
   }

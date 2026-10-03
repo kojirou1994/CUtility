@@ -1,5 +1,5 @@
-@_alwaysEmitIntoClient
-@inlinable @inline(__always)
+@export(implementation)
+@inline(__always)
 public func safeInitialize<T: ~Copyable, E: Error>(_ body: (inout T?) throws(E) -> Void) throws(E) -> T {
   var temp: T?
   do {

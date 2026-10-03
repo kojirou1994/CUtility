@@ -5,7 +5,7 @@ extension Sequence where Element: BitwiseCopyable {
   /// - Parameters:
   ///   - capacity: element capacity
   ///   - body: maybe called multiple times
-  @_alwaysEmitIntoClient @inlinable
+  @export(implementation)
   public func withContiguousStorageSegments<E: Error>(capacity: Int, _ body: (_ buffer: UnsafeBufferPointer<Element>) throws(E) -> Void) throws(E) {
     precondition(capacity > 0)
 

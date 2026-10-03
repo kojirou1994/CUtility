@@ -7,8 +7,8 @@ import SwiftFix
 
 extension StaticString: ContiguousUTF8Bytes {
 
-  @_alwaysEmitIntoClient
-  @inlinable @inline(__always)
+  @export(implementation)
+  @inline(__always)
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     var result: Result<R, E>!
     withUTF8Buffer { buf in
@@ -21,24 +21,24 @@ extension StaticString: ContiguousUTF8Bytes {
 }
 
 extension String: ContiguousUTF8Bytes {
-  @_alwaysEmitIntoClient
-  @inlinable @inline(__always)
+  @export(implementation)
+  @inline(__always)
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     try utf8.withContiguousUTF8Bytes(body)
   }
 }
 
 extension Substring: ContiguousUTF8Bytes {
-  @_alwaysEmitIntoClient
-  @inlinable @inline(__always)
+  @export(implementation)
+  @inline(__always)
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     try utf8.withContiguousUTF8Bytes(body)
   }
 }
 
 extension ContiguousUTF8Bytes where Self: Sequence<UInt8> {
-  @_alwaysEmitIntoClient
-  @inlinable @inline(__always)
+  @export(implementation)
+  @inline(__always)
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     var result: Result<R, E>!
 
@@ -62,8 +62,8 @@ extension ContiguousUTF8Bytes where Self: Sequence<UInt8> {
 }
 
 extension ContiguousUTF8Bytes where Self: CString {
-  @_alwaysEmitIntoClient
-  @inlinable @inline(__always)
+  @export(implementation)
+  @inline(__always)
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     try withUnsafeCString { cString throws(E) in
       try body(.init(start: cString, count: UTF8._nullCodeUnitOffset(in: cString)))
@@ -85,15 +85,15 @@ extension String.UTF8View: ContiguousUTF8Bytes {}
 extension Substring.UTF8View: ContiguousUTF8Bytes {}
 
 extension EmptyCollection: ContiguousUTF8Bytes where Element == UInt8 {
-  @_alwaysEmitIntoClient
-  @inlinable @inline(__always)
+  @export(implementation)
+  @inline(__always)
   public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
     try body(.init(start: nil, count: 0))
   }
 }
 
 //extension RawSpan: ContiguousUTF8Bytes {
-//  @_alwaysEmitIntoClient
+//  @export(implementation)
 //  @inlinable @inline(__always)
 //  public func withContiguousUTF8Bytes<R, E>(_ body: (UnsafeRawBufferPointer) throws(E) -> R) throws(E) -> R where E : Error, R : ~Copyable {
 //    try withUnsafeBytes(body)
